@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,8 +24,8 @@ public class Cria extends HttpServlet {
 		out.println("<html><body>");
 		out.println("<form method='post'>");
 		out.println("Conteudo: <input type='text' name='conteudo'><br>");
-		out.println("Data de Criação: <input type='text' name='datacriacao'><br>");
-		//out.println("Altura: <input type='number' name='altura' step='0.01'><br>");
+		out.println("ID-Cor (a nota será pintada de acordo com a cor relacionada a esse id"
+				+ " na tabela cores): <input type='number' name='idcor'><br>");
 		out.println("<input type='submit' value='Submit'>");
 		out.println("</form>");
 		out.println("<body><html>");
@@ -36,20 +37,23 @@ public class Cria extends HttpServlet {
 		
 		DAO dao;
 		dao = new DAO();
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        System.out.println(timestamp);
 
 		Notas nota = new Notas();
 		nota.setConteudo(request.getParameter("conteudo"));
-		nota.setDatacriacao(request.getParameter("datacriacao"));
-		//String nascimento = request.getParameter("nascimento");
-		//Date data = new SimpleDateFormat("yyyy-MM-dd").parse(nascimento);
-		//Calendar dataNascimento = Calendar.getInstance();
-		//dataNascimento.setTime(data);
-		//pessoa.setNascimento(dataNascimento);
+		nota.setDatacriacao(timestamp);
+		nota.setIdcor(Integer.parseInt(request.getParameter("idcor")));
 		
 		dao.adiciona(nota);
+		
 		PrintWriter out = response.getWriter();
+		
 		out.println("<html><body>");
-		out.println("Adicionado uma nova nota de Id: " + nota.getId().toString() + "!11!!1!11!!!111!1!1");
+		out.println("Adicionado uma nova nota!<br>");
+		out.println("<form action='/Projeto1Definitivo/welcome.jsp'>");
+		out.println("<input type='submit' value='OK'>");
+		out.println("</form>");
 		out.println("</body></html>");
 		dao.close();
 

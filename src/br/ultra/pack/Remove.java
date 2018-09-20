@@ -31,6 +31,9 @@ public class Remove extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		out.println("<html><body>");
 		out.println("removido");
+		out.println("<form action='/Projeto1Definitivo/welcome.jsp'>");
+		out.println("<input type='submit' value='OK'>");
+		out.println("</form>");
 		out.println("</body></html>");
 		dao.close();
 	}

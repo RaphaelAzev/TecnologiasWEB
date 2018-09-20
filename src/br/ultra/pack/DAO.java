@@ -39,10 +39,8 @@ public class DAO {
 				Notas nota = new Notas();
 				nota.setId(rs.getInt("id_nota"));
 				nota.setConteudo(rs.getString("conteudo"));
-				//Calendar data = Calendar.getInstance();
-				//data.setTime(rs.getDate("nascimento"));
-				nota.setDatacriacao(rs.getString("data"));
-				//pessoa.setAltura(rs.getDouble("altura"));
+				nota.setDatacriacao(rs.getTimestamp("data"));
+				nota.setIdcor(rs.getInt("id_cor"));
 				notas.add(nota);
 			}
 			rs.close();
@@ -54,15 +52,44 @@ public class DAO {
 		return notas;
 	}
 	
+	public List<Cor> getListaCor() {
+		List<Cor> cores = new ArrayList<Cor>();
+		PreparedStatement stmt;
+		try {
+			stmt = connection.prepareStatement("SELECT * FROM Cores");
+			ResultSet rs = stmt.executeQuery();
+			while (rs.next()) {
+				Cor cor = new Cor();
+				cor.setId(rs.getInt("id_cor"));
+				cor.setCorHexa(rs.getString("CorHexa"));
+				//Calendar data = Calendar.getInstance();
+				//data.setTime(rs.getDate("nascimento"));
+				//nota.setDatacriacao(rs.getTimestamp("data"));
+				//pessoa.setAltura(rs.getDouble("altura"));
+				cores.add(cor);
+			}
+			rs.close();
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return cores;
+	}
+	
+	
+	
+	
+	
 	
 	public void adiciona(Notas nota) {
-		String sql = "INSERT INTO Notas" + "(conteudo, data) values(?,?)";
+		String sql = "INSERT INTO Notas" + "(conteudo, data, id_cor) values(?,?,?)";
 		PreparedStatement stmt;
 		try {
 			stmt = connection.prepareStatement(sql);
 			stmt.setString(1,nota.getConteudo());
-			stmt.setString(2, nota.getDatacriacao()); 
-			//stmt.setDouble(3,pessoa.getAltura());
+			stmt.setTimestamp(2, nota.getDatacriacao()); 
+			stmt.setInt(3, nota.getIdcor());
 			stmt.execute();
 			stmt.close();
 		} catch (SQLException e) {
@@ -71,15 +98,31 @@ public class DAO {
 		}
 	}
 	
+	public void adicionaCOR(Cor cor) {
+		String sql = "INSERT INTO Cores" + "(CorHexa) values(?)";
+		PreparedStatement stmt;
+		try {
+			stmt = connection.prepareStatement(sql);
+			stmt.setString(1,cor.getCorHexa());
+			stmt.execute();
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
 	public void altera(Notas nota) {
-		String sql = "UPDATE Notas SET " + "conteudo=?, data=? WHERE id_nota =?";
+		String sql = "UPDATE Notas SET " + "conteudo=?, data=?, id_cor=? WHERE id_nota =?";
 		PreparedStatement stmt;
 		try {
 			stmt = connection.prepareStatement(sql);
 			stmt.setString(1, nota.getConteudo());
-			stmt.setString(2, nota.getDatacriacao());
-			//stmt.setDouble(3, pessoa.getAltura());
-			stmt.setInt(3, nota.getId());
+			stmt.setTimestamp(2, nota.getDatacriacao());
+			stmt.setInt(3, nota.getIdcor());
+			stmt.setInt(4, nota.getId());
 			stmt.execute();
 			stmt.close();
 		
@@ -89,6 +132,25 @@ public class DAO {
 		}
 		
 	}
+	
+	public void alteraCOR(Cor cor) {
+		String sql = "UPDATE Cores SET " + "CorHexa=? WHERE id_cor =?";
+		PreparedStatement stmt;
+		try {
+			stmt = connection.prepareStatement(sql);
+			stmt.setString(1, cor.getCorHexa());
+			stmt.setInt(2, cor.getId());
+			stmt.execute();
+			stmt.close();
+		
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
 	
 	public void remove(Integer id) {
 		PreparedStatement stmt;
@@ -102,6 +164,21 @@ public class DAO {
 			e.printStackTrace();
 		}
 	}
+	
+	public void removeCOR(Integer id) {
+		PreparedStatement stmt;
+		try {
+			stmt = connection.prepareStatement("DELETE FROM Cores WHERE id_cor =?");
+			stmt.setLong(1, id);
+			stmt.execute();
+			stmt.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	
 	public void close() {
 		try {

@@ -3,6 +3,7 @@ package br.ultra.pack;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,7 +24,9 @@ public class Atualiza extends HttpServlet {
 	out.println("<form method='post'>");
 	out.println("ID: <input type='number' name='id'><br>");
 	out.println("Conteudo: <input type='text' name='conteudo'><br>");
-	out.println("Data de Criação: <input type='text' name='datacriacao'><br>");
+	out.println("ID-Cor (a nota será pintada de acordo com a cor relacionada a esse id"
+			+ " na tabela cores: <input type='number' name='idcor'><br>");
+	//out.println("Data de Criação: <input type='text' name='datacriacao'><br>");
 	//out.println("Altura: <input type='number' name='altura' step='0.01'><br>");
 	out.println("<input type='submit' value='Submit'>");
 	out.println("</form>");
@@ -34,10 +37,13 @@ public class Atualiza extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		DAO dao = new DAO();
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        //System.out.println(timestamp);
 		Notas nota = new Notas();
 		nota.setId(Integer.valueOf(request.getParameter("id")));
 		nota.setConteudo(request.getParameter("conteudo"));
-		nota.setDatacriacao(request.getParameter("datacriacao"));
+		nota.setDatacriacao(timestamp);
+		nota.setIdcor(Integer.parseInt(request.getParameter("idcor")));
 		//String nascimento = request.getParameter("nascimento");
 		//Date data = new SimpleDateFormat("yyyy-MM-dd").parse(nascimento);
 		//Calendar dataNascimento = Calendar.getInstance();
@@ -46,7 +52,10 @@ public class Atualiza extends HttpServlet {
 		dao.altera(nota);
 		PrintWriter out = response.getWriter();
 		out.println("<html><body>");
-		out.println("atualizado nota de Id: " + nota.getId().toString() + "!11!!1!11!!!111!1!1");
+		out.println("atualizado nota de Id: " + nota.getId().toString() + "!");
+		out.println("<form action='/Projeto1Definitivo/welcome.jsp'>");
+		out.println("<input type='submit' value='OK'>");
+		out.println("</form>");
 		out.println("</body></html>");
 		dao.close();
 
