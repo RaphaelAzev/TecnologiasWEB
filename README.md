@@ -1,2 +1,0 @@
-# TecnologiasWEB
-Techno
